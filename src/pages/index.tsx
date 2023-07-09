@@ -1,9 +1,11 @@
 import Head from 'next/head';
 import Image from 'next/image';
+import { useState, useContext } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { Box, Button, Typography, TextField } from '@mui/material';
-import { useForm } from 'react-hook-form';
+
 import theme from '../theme';
+import { InfoContext, InfoProvider } from '../contexts/info';
 
 // Initial page is login page
 // TODO: If user is logged in, redirect to dashboard
