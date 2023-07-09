@@ -5,7 +5,7 @@ export interface SnackbarI {
   duration: number;
 }
 
-export interface FilesI {
+export interface FileI {
   id: string;
   url: string;
   name: string;

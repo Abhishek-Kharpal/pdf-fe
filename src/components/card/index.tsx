@@ -1,7 +1,7 @@
 import { Box, Typography, Divider } from '@mui/material';
-import { FilesI } from '../../types';
+import { FileI } from '../../types';
 
-const Card = ({ file }: { file: FilesI }) => {
+const Card = ({ file }: { file: FileI }) => {
   return (
     <Box
       sx={{
