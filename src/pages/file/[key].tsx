@@ -120,6 +120,7 @@ const File = () => {
             </Typography>
           </Box>
 
+          {/* Comments */}
           <Box
             sx={{
               display: 'flex',
@@ -181,6 +182,26 @@ const File = () => {
               </Tooltip>
             </Paper>
           </Box>
+        </Box>
+
+        {/* PDF Viewer */}
+        <Box
+          sx={{
+            width: '80vw',
+            height: '100vh',
+            bgcolor: 'primary.main',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <iframe
+            src="https://html.spec.whatwg.org/print.pdf"
+            width="100%"
+            height="100%"
+            style={{ border: 'none' }}
+            title={`${file?.name} PDF Viewer`}
+          />
         </Box>
       </Box>
     </>
