@@ -10,7 +10,7 @@ const Dashboard = () => {
     setUser({
       name: 'Abhishek',
       email: 'abk@gmail.com',
-      storage: 12,
+      storage: 400,
       files: [],
       comments: [],
     });
@@ -54,7 +54,50 @@ const Dashboard = () => {
             ShareIt
           </Typography>
         </Box>
+
+        {/* User Details */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexGrow: 1,
+          }}
+        >
+          {/* User name */}
+          <Typography variant="h6" color="primary.contrastText">
+            {user?.name}
+          </Typography>
+
+          {/* Storage */}
+          <Typography variant="caption" color="primary.contrastText">
+            {user?.storage} MB of 500 MB used
+          </Typography>
+
+          {/* Progress Bar */}
+          <Box sx={{ width: '80%', marginTop: '8px' }}>
+            <LinearProgress
+              variant="determinate"
+              value={(user?.storage / 500) * 100}
+              sx={{
+                '& .MuiLinearProgress-bar': {
+                  bgcolor: 'secondary.main',
+                },
+              }}
+            />
+          </Box>
+
+          {/* Upgrade to pro button */}
+          <Box mt="8px">
+            <Button variant="outlined" color="secondary" sx={{ width: '16vw', padding: '8px', fontSize: '0.8rem' }}>
+              Get Pro
+            </Button>
+          </Box>
+        </Box>
+
         {/* LogOut Button */}
+        {/* TODO: For responsive replace it with icon */}
         <Box
           sx={{
             display: 'flex',
