@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import { useState, useContext } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import { Box, Button, Typography, TextField } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
+import LoginForm from '../components/loginForm';
 
 import theme from '../theme';
 import { InfoContext, InfoProvider } from '../contexts/info';
@@ -54,16 +54,9 @@ export default function Home() {
                   Register
                 </Button>
               </Box>
+
               {/* Form will come here either register or login */}
-              <form className="form">
-                <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-                  <input type="email" placeholder="Email" />
-                  <input type="password" placeholder="Password" />
-                  <Button variant="contained" color="secondary" sx={{ width: '100%', padding: '8px' }}>
-                    Login
-                  </Button>
-                </Box>
-              </form>
+              <LoginForm />
             </Box>
           </Box>
         </Box>
