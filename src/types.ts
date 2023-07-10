@@ -12,7 +12,11 @@ export interface FileI {
     data: ArrayBuffer;
   };
   name: string;
-  author: string;
+  author: {
+    id: string;
+    name: string;
+    email: string;
+  };
   authorId: string;
   comments: CommentI[];
   createdAt: Date;

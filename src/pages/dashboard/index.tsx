@@ -50,7 +50,7 @@ const Dashboard = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
 
-      const response = await axios.post(`${API_URL}/upload`, formData, {
+      const response = await axios.post(`${API_URL}/file/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,

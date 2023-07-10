@@ -1,7 +1,10 @@
-import { Box, Typography, Divider } from '@mui/material';
+import { useRouter } from 'next/router';
+import { Box, Typography } from '@mui/material';
 import { FileI } from '../../types';
 
 const Card = ({ file }: { file: FileI }) => {
+  const router = useRouter();
+
   return (
     <Box
       sx={{
@@ -18,6 +21,7 @@ const Card = ({ file }: { file: FileI }) => {
           border: '1px solid #b785f5',
         },
       }}
+      onClick={() => router.push(`/file/${file.id}`)}
     >
       <Box
         sx={{
