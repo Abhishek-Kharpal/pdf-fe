@@ -18,6 +18,8 @@ const Dashboard = () => {
   const { loading, setLoading } = useContext(LoadingContext);
   const { setToast } = useContext(ToastContext);
 
+  const router = useRouter();
+
   useEffect(() => {
     setFiles(user?.files || null);
   }, [user]);
@@ -76,6 +78,7 @@ const Dashboard = () => {
   const handleLogOut = () => {
     localStorage.removeItem('token');
     setUser(null);
+    router.push('/');
   };
 
   if (!files) {
@@ -151,7 +154,7 @@ const Dashboard = () => {
             <Box sx={{ width: '80%', marginTop: '8px' }}>
               <LinearProgress
                 variant="determinate"
-                value={(user?.storage / 500) * 100}
+                value={(user?.storage / 1024 / 1024 / 500) * 100}
                 sx={{
                   '& .MuiLinearProgress-bar': {
                     bgcolor: 'secondary.main',
@@ -247,43 +250,50 @@ const Dashboard = () => {
             </Paper>
           </Box>
           {/* Upload Card */}
-          {/* FIXME: LIMIT its width */}
-          <input type="file" name="file" id="file" onChange={handleFileUpload} hidden accept="application/pdf" />
-          <label htmlFor="file">
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+            className="basic-padding"
+          >
+            <Typography variant="h6" color="primary.contrastText">
+              Upload PDF
+            </Typography>
             <Box
               sx={{
+                width: '128px',
+                height: '128px',
+                border: '1px dashed #F5F5F5',
+                marginTop: '8px',
+                cursor: 'pointer',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between',
+                alignItems: 'center',
+                '&:hover': {
+                  border: '1px solid #b785f5',
+                },
               }}
               className="basic-padding"
             >
-              <Typography variant="h6" color="primary.contrastText">
-                Upload PDF
-              </Typography>
-              <Box
-                sx={{
-                  width: '128px',
-                  height: '128px',
-                  border: '1px dashed #F5F5F5',
-                  marginTop: '8px',
+              <input type="file" name="file" id="file" onChange={handleFileUpload} accept="application/pdf" hidden />
+              <label
+                htmlFor="file"
+                style={{
                   cursor: 'pointer',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  '&:hover': {
-                    border: '1px solid #b785f5',
-                  },
                 }}
-                className="basic-padding"
               >
                 <Image src="/upload.svg" alt="Upload" width={50} height={50} />
                 <Typography variant="caption" color="primary.contrastText">
                   Upload your pdf here
                 </Typography>
-              </Box>
+              </label>
             </Box>
-          </label>
+          </Box>
 
           {/* Your Files */}
           <Box
