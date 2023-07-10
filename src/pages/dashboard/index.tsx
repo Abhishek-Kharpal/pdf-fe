@@ -1,25 +1,23 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState, useContext } from 'react';
 import { Box, Typography, LinearProgress, Button, InputBase, IconButton, Paper, Tooltip } from '@mui/material';
 import { Search } from '@mui/icons-material';
+import axios from 'axios';
 import Card from '../../components/card';
+import { LoadingContext } from '../../contexts/loading';
+import { AuthContext } from '../../contexts/auth';
+import { ToastContext } from '../../contexts/toast';
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null);
   const [files, setFiles] = useState([]);
 
+  const { user, setUser } = useContext(AuthContext);
+  const { loading, setLoading } = useContext(LoadingContext);
+  const { setToast } = useContext(ToastContext);
+
   useEffect(() => {
-    // Get user details
-    setUser({
-      id: '123',
-      name: 'Abhishek',
-      email: 'abk@gmail.com',
-      storage: 400,
-      files: [],
-      comments: [],
-    });
-    // Get files
     setFiles([
       {
         id: '123',
@@ -93,6 +91,10 @@ const Dashboard = () => {
       },
     ]);
   }, []);
+
+  if (loading) {
+    return <></>;
+  }
 
   return (
     <>

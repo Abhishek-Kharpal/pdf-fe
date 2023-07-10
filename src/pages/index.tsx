@@ -13,8 +13,6 @@ import { ToastContext } from '../contexts/toast';
 export default function Home() {
   const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
   const { user } = useContext(AuthContext);
-  const { setLoading } = useContext(LoadingContext);
-  const { setToast } = useContext(ToastContext);
 
   const router = useRouter();
 
@@ -33,7 +31,7 @@ export default function Home() {
       <Box height="100vh" width="100vw" display="flex">
         {/* Image Panel */}
         <Box className="basic-padding" display="flex" justifyContent="center" alignItems="center" width="40%">
-          {/* TODO: Missing responsive images */}
+          {/* TODO: Remove image for mobile view */}
           <Image src="/auth.svg" alt="Authentication" width={500} height={500} />
         </Box>
         {/* Form Panel */}

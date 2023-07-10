@@ -1,18 +1,7 @@
 import { Box, Dialog, Typography, Button, TextField } from '@mui/material';
-import { useForm } from 'react-hook-form';
 import { RegisterModalI } from '../../types';
 
 const RegisterModal = ({ open, handleClose }: RegisterModalI) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
-  const onSubmit = (data: any) => {
-    console.log(data);
-  };
-
   return (
     <Dialog open={open}>
       <Box>
@@ -20,12 +9,12 @@ const RegisterModal = ({ open, handleClose }: RegisterModalI) => {
           Register
         </Typography>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form>
           <TextField
-            {...register('email', {
-              required: true,
-              pattern: /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/,
-            })}
+            // {...register('email', {
+            //   required: true,
+            //   pattern: /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/,
+            // })}
             label="Email"
             variant="filled"
             margin="normal"
@@ -40,10 +29,10 @@ const RegisterModal = ({ open, handleClose }: RegisterModalI) => {
             }}
           />
           <TextField
-            {...register('password', {
-              required: true,
-              minLength: 8,
-            })}
+            // {...register('password', {
+            //   required: true,
+            //   minLength: 8,
+            // })}
             label="Password"
             variant="filled"
             margin="normal"
@@ -58,10 +47,10 @@ const RegisterModal = ({ open, handleClose }: RegisterModalI) => {
             }}
           />
           <TextField
-            {...register('confirmPassword', {
-              required: true,
-              minLength: 8,
-            })}
+            // {...register('confirmPassword', {
+            //   required: true,
+            //   minLength: 8,
+            // })}
             label="Confirm Password"
             variant="filled"
             margin="normal"
@@ -76,9 +65,9 @@ const RegisterModal = ({ open, handleClose }: RegisterModalI) => {
             }}
           />
           <TextField
-            {...register('name', {
-              required: true,
-            })}
+            // {...register('name', {
+            //   required: true,
+            // })}
             label="Name"
             variant="filled"
             margin="normal"

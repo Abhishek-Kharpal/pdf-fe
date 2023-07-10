@@ -13,6 +13,9 @@ let theme = createTheme({
       light: '#16171b',
       contrastText: '#F5F5F5',
     },
+    error: {
+      main: '#F44336',
+    },
   },
 });
 

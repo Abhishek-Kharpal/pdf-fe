@@ -30,6 +30,12 @@ export interface RegisterModalI {
 }
 
 export interface AuthContextI {
-  user: string | null;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    files: FileI[];
+    storage: number;
+  };
   setUser: (user: string) => void;
 }
