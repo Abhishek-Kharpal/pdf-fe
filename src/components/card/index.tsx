@@ -5,8 +5,8 @@ const Card = ({ file }: { file: FileI }) => {
   return (
     <Box
       sx={{
-        width: '128px',
-        height: '128px',
+        width: '180px',
+        height: '180px',
         border: '1px dashed #F5F5F5',
         marginTop: '8px',
         cursor: 'pointer',
@@ -27,12 +27,20 @@ const Card = ({ file }: { file: FileI }) => {
         }}
       >
         {/* TODO: Add pdf image */}
-        <Typography variant="caption" color="primary.contrastText">
+        <Typography
+          variant="caption"
+          color="primary.contrastText"
+          sx={{
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+          }}
+        >
           {file.name}
         </Typography>
 
         <Typography variant="caption" color="primary.contrastText">
-          {file.size} MB
+          {Math.round((file.size / 1024 / 1024) * 100) / 100} MB
         </Typography>
       </Box>
     </Box>

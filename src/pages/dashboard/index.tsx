@@ -1,98 +1,83 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState, useContext } from 'react';
 import { Box, Typography, LinearProgress, Button, InputBase, IconButton, Paper, Tooltip } from '@mui/material';
 import { Search } from '@mui/icons-material';
+import axios from 'axios';
 import Card from '../../components/card';
+import { API_URL } from '../../constants/server';
+import { LoadingContext } from '../../contexts/loading';
+import { AuthContext } from '../../contexts/auth';
+import { ToastContext } from '../../contexts/toast';
+import { FileI } from '../../types';
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null);
-  const [files, setFiles] = useState([]);
+  const { user, setUser } = useContext(AuthContext);
+  const [files, setFiles] = useState<FileI[] | null>(null);
+  const { loading, setLoading } = useContext(LoadingContext);
+  const { setToast } = useContext(ToastContext);
+  const router = useRouter();
 
   useEffect(() => {
-    // Get user details
-    setUser({
-      id: '123',
-      name: 'Abhishek',
-      email: 'abk@gmail.com',
-      storage: 400,
-      files: [],
-      comments: [],
-    });
-    // Get files
-    setFiles([
-      {
-        id: '123',
-        url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-        name: 'Dummy',
-        author: 'Abhishek',
-        authorId: '123',
-        comments: [],
-        createdAt: new Date(),
-        size: 10,
-      },
-      {
-        id: '1',
-        url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-        name: 'Dummy',
-        author: 'Abhishek',
-        authorId: '123',
-        comments: [],
-        createdAt: new Date(),
-        size: 10,
-      },
-      {
-        id: '13',
-        url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-        name: 'Dummy',
-        author: 'Abhishek',
-        authorId: '123',
-        comments: [],
-        createdAt: new Date(),
-        size: 10,
-      },
-      {
-        id: '23',
-        url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-        name: 'Dummy',
-        author: 'Abhishek',
-        authorId: '123',
-        comments: [],
-        createdAt: new Date(),
-        size: 10,
-      },
-      {
-        id: '1023',
-        url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-        name: 'Dummy',
-        author: 'Abhishek',
-        authorId: '123',
-        comments: [],
-        createdAt: new Date(),
-        size: 10,
-      },
-      {
-        id: '1231',
-        url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-        name: 'Dummy',
-        author: 'Abhishek',
-        authorId: '123',
-        comments: [],
-        createdAt: new Date(),
-        size: 10,
-      },
-      {
-        id: '1232',
-        url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-        name: 'Dummy',
-        author: 'Abhishek',
-        authorId: '123',
-        comments: [],
-        createdAt: new Date(),
-        size: 10,
-      },
-    ]);
-  }, []);
+    setFiles(user?.files || null);
+  }, [user]);
+
+  if (loading) {
+    // Change it to skeleton
+    return <></>;
+  }
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const file = e.target.files?.[0]!;
+    if (!file) {
+      setToast({
+        open: true,
+        message: 'Please select a file',
+        severity: 'error',
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('name', file.name);
+    formData.append('size', file.size.toString());
+    formData.append('type', file.type);
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+
+      const response = await axios.post(`${API_URL}/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = response.data;
+      setUser(data.user);
+
+      setToast({
+        open: true,
+        message: 'File uploaded successfully',
+        severity: 'success',
+      });
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setToast({
+        open: true,
+        message: 'Something went wrong',
+        severity: 'error',
+      });
+      setLoading(false);
+    }
+  };
+
+  if (!files) {
+    return <></>;
+  }
 
   return (
     <>
@@ -156,7 +141,7 @@ const Dashboard = () => {
 
             {/* Storage */}
             <Typography variant="caption" color="primary.contrastText">
-              {user?.storage} MB of 500 MB used
+              {Math.round((user?.storage / 1024 / 1024) * 100) / 100} MB of 500 MB used
             </Typography>
 
             {/* Progress Bar */}
@@ -254,41 +239,42 @@ const Dashboard = () => {
             </Paper>
           </Box>
           {/* Upload Card */}
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-            }}
-            className="basic-padding"
-          >
-            <Typography variant="h6" color="primary.contrastText">
-              Upload PDF
-            </Typography>
-
+          <input type="file" name="file" id="file" onChange={handleFileUpload} hidden accept="application/pdf" />
+          <label htmlFor="file">
             <Box
               sx={{
-                width: '128px',
-                height: '128px',
-                border: '1px dashed #F5F5F5',
-                marginTop: '8px',
-                cursor: 'pointer',
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
-                '&:hover': {
-                  border: '1px solid #b785f5',
-                },
+                justifyContent: 'space-between',
               }}
               className="basic-padding"
             >
-              <Image src="/upload.svg" alt="Upload" width={50} height={50} />
-
-              <Typography variant="caption" color="primary.contrastText">
-                Upload your pdf here
+              <Typography variant="h6" color="primary.contrastText">
+                Upload PDF
               </Typography>
+              <Box
+                sx={{
+                  width: '128px',
+                  height: '128px',
+                  border: '1px dashed #F5F5F5',
+                  marginTop: '8px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  '&:hover': {
+                    border: '1px solid #b785f5',
+                  },
+                }}
+                className="basic-padding"
+              >
+                <Image src="/upload.svg" alt="Upload" width={50} height={50} />
+                <Typography variant="caption" color="primary.contrastText">
+                  Upload your pdf here
+                </Typography>
+              </Box>
             </Box>
-          </Box>
+          </label>
 
           {/* Your Files */}
           <Box
@@ -307,7 +293,6 @@ const Dashboard = () => {
               sx={{
                 display: 'flex',
                 flexDirection: 'row',
-                justifyContent: 'space-between',
                 alignItems: 'center',
                 marginTop: '8px',
                 flexWrap: 'wrap',

@@ -1,12 +1,25 @@
 import Head from 'next/head';
 import Image from 'next/image';
+import { useState, useContext } from 'react';
+import { useRouter } from 'next/router';
 import { Box, Button, Typography } from '@mui/material';
 import LoginForm from '../components/loginForm';
+import RegisterModal from '../components/registerModal';
+import { AuthContext } from '../contexts/auth';
+import { LoadingContext } from '../contexts/loading';
+import { ToastContext } from '../contexts/toast';
 
-// Initial page is login page
-// TODO: If user is logged in, redirect to dashboard
 // TODO: Internalization of text
 export default function Home() {
+  const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
+  const { user } = useContext(AuthContext);
+
+  const router = useRouter();
+
+  if (user) {
+    router.push('/dashboard');
+  }
+
   return (
     <>
       <Head>
@@ -15,11 +28,10 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <Box height={'100vh'} width={'100vw'} display="flex">
+      <Box height="100vh" width="100vw" display="flex">
         {/* Image Panel */}
         <Box className="basic-padding" display="flex" justifyContent="center" alignItems="center" width="40%">
-          {/* TODO: Missing responsive images */}
+          {/* TODO: Remove image for mobile view */}
           <Image src="/auth.svg" alt="Authentication" width={500} height={500} />
         </Box>
         {/* Form Panel */}
@@ -41,12 +53,18 @@ export default function Home() {
               </Typography>
 
               {/* TODO: check outlined variant */}
-              <Button variant="contained" color="secondary" sx={{ width: '16vw', padding: '8px', fontSize: '0.8rem' }}>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={{ width: '16vw', padding: '8px', fontSize: '0.8rem' }}
+                onClick={() => {
+                  setRegisterDialogOpen(true);
+                }}
+              >
                 Register
               </Button>
             </Box>
 
-            {/* Form will come here either register or login */}
             <LoginForm />
           </Box>
         </Box>

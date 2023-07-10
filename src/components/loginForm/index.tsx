@@ -1,15 +1,92 @@
 import { useState, useContext } from 'react';
-import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
 import { Box, Button, Typography, TextField } from '@mui/material';
-import { InfoContext } from '@/contexts/info';
+import axios from 'axios';
+import { ToastContext } from '../../contexts/toast';
+import { AuthContext } from '../../contexts/auth';
+import { LoadingContext } from '../../contexts/loading';
+import { API_URL } from '../../constants/server';
+
+interface LoginFormI {
+  email: string;
+  password: string;
+}
 
 const LoginForm = () => {
-  const { setSnackbar } = useContext(InfoContext);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { setToast } = useContext(ToastContext);
+  const { loading, setLoading } = useContext(LoadingContext);
+  const { setUser } = useContext(AuthContext);
+  const router = useRouter();
+
+  const [loginForm, setLoginForm] = useState<LoginFormI>({
+    email: '',
+    password: '',
+  });
+
+  const [loginFormErrors, setLoginFormErrors] = useState<LoginFormI>({
+    email: '',
+    password: '',
+  });
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const email = e.target.value;
+    if (!email.match(/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/)) {
+      setLoginForm({ ...loginForm, email });
+      setLoginFormErrors({ ...loginFormErrors, email: 'Email must contain domain' });
+      return;
+    }
+    if (email.length < 5) {
+      setLoginForm({ ...loginForm, email });
+      setLoginFormErrors({ ...loginFormErrors, email: 'Email must be at least 5 characters' });
+      return;
+    }
+    setLoginForm({ ...loginForm, email });
+    setLoginFormErrors({ ...loginFormErrors, email: '' });
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length < 8) {
+      setLoginForm({ ...loginForm, password: e.target.value });
+      setLoginFormErrors({ ...loginFormErrors, password: 'Password must be at least 8 characters' });
+      return;
+    }
+    setLoginForm({ ...loginForm, password: e.target.value });
+    setLoginFormErrors({ ...loginFormErrors, password: '' });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      if (loginFormErrors.email.length > 0 || loginFormErrors.password.length > 0) {
+        throw new Error('Invalid form');
+      }
+      const res = await axios.post(`${API_URL}/login`, loginForm);
+      const token = res.data.token;
+      localStorage.setItem('token', token);
+      const tokenValidation = await axios.get(`${API_URL}/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setToast({
+        open: true,
+        message: res.data.message,
+        severity: 'success',
+      });
+      setUser(tokenValidation.data.user);
+      setLoading(false);
+      router.push('/dashboard');
+    } catch (err) {
+      setToast({
+        open: true,
+        message: err.message,
+        severity: 'error',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Box display="flex" justifyContent="center" flexBasis="100%" flexWrap="wrap">
@@ -23,7 +100,7 @@ const LoginForm = () => {
         </Typography>
 
         <form
-          onSubmit={handleSubmit((data) => console.log(data))}
+          onSubmit={handleSubmit}
           style={{
             display: 'flex',
             flexDirection: 'column',
@@ -32,10 +109,8 @@ const LoginForm = () => {
           }}
         >
           <TextField
-            {...register('email', {
-              required: true,
-              pattern: /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/,
-            })}
+            onChange={handleEmailChange}
+            value={loginForm.email}
             label="Email"
             variant="filled"
             margin="normal"
@@ -49,11 +124,14 @@ const LoginForm = () => {
               },
             }}
           />
+          {loginFormErrors.email && (
+            <Typography variant="body1" color="error.main" padding="8px" textAlign="center">
+              {loginFormErrors.email}
+            </Typography>
+          )}
           <TextField
-            {...register('password', {
-              required: true,
-              minLength: 8,
-            })}
+            onChange={handlePasswordChange}
+            value={loginForm.password}
             label="Password"
             variant="filled"
             margin="normal"
@@ -62,15 +140,22 @@ const LoginForm = () => {
             sx={{ width: '16vw', fontSize: '0.8rem', bgcolor: 'primary.contrastText' }}
             size="small"
           />
-          <Button
-            variant="contained"
-            color="secondary"
-            className="basic-margin"
-            sx={{ width: '16vw', padding: '8px', fontSize: '0.8rem' }}
-            type="submit"
-          >
-            Login
-          </Button>
+          {loginFormErrors.password && (
+            <Typography variant="body1" color="error.main" padding="8px" textAlign="center">
+              {loginFormErrors.password}
+            </Typography>
+          )}
+          {!loading && (
+            <Button
+              variant="contained"
+              color="secondary"
+              className="basic-margin"
+              sx={{ width: '16vw', padding: '8px', fontSize: '0.8rem' }}
+              type="submit"
+            >
+              Login
+            </Button>
+          )}
         </form>
       </Box>
     </Box>
