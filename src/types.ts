@@ -7,7 +7,7 @@ export interface SnackbarI {
 
 export interface FileI {
   id: string;
-  url: string;
+  data: string;
   name: string;
   author: string;
   authorId: string;
