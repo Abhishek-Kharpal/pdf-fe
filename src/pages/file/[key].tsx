@@ -230,7 +230,7 @@ const File = () => {
           }}
         >
           <iframe
-            src="https://html.spec.whatwg.org/print.pdf"
+            src={`data:application/pdf;base64,${Buffer.from(file.data.data).toString('base64')}`}
             width="100%"
             height="100%"
             style={{ border: 'none' }}
