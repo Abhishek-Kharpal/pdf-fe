@@ -1,10 +1,10 @@
 import { useState, useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { Box, Button, Typography, TextField } from '@mui/material';
-import { InfoContext } from '@/contexts/info';
+import { ToastContext } from '../../contexts/toast';
 
 const LoginForm = () => {
-  const { setSnackbar } = useContext(InfoContext);
+  const { setSnackbar } = useContext(ToastContext);
   const {
     register,
     handleSubmit,

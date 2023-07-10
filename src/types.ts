@@ -23,3 +23,13 @@ export interface CommentI {
   authorId: string;
   createdAt: Date;
 }
+
+export interface RegisterModalI {
+  open: boolean;
+  handleClose: (open) => {};
+}
+
+export interface AuthContextI {
+  user: string | null;
+  setUser: (user: string) => void;
+}

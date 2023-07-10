@@ -1,19 +1,19 @@
 import { createContext, useState } from 'react';
 import { Snackbar } from '@mui/material';
-import { SnackbarI } from '@/types';
+import { SnackbarI } from '../types';
 
-export const InfoContext = createContext({
+export const ToastContext = createContext({
   snackbar: {
     open: false,
     message: '',
     severity: 'success',
     duration: 3000,
   },
-  setSnackbar: (snackbar) => {},
+  setToast: (snackbar) => {},
 });
 
-export const InfoProvider = ({ children }) => {
-  const [snackbar, setSnackbar] = useState<SnackbarI>({
+export const ToastProvider = ({ children }) => {
+  const [snackbar, setToast] = useState<SnackbarI>({
     open: false,
     message: '',
     severity: 'success',
@@ -21,15 +21,15 @@ export const InfoProvider = ({ children }) => {
   });
 
   return (
-    <InfoContext.Provider value={{ snackbar, setSnackbar }}>
+    <ToastContext.Provider value={{ snackbar, setToast }}>
       <Snackbar
         open={snackbar.open}
         autoHideDuration={snackbar.duration}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        onClose={() => setToast({ ...snackbar, open: false })}
         message={snackbar.message}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       />
       {children}
-    </InfoContext.Provider>
+    </ToastContext.Provider>
   );
 };
