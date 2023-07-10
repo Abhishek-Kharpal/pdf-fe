@@ -7,7 +7,10 @@ export interface SnackbarI {
 
 export interface FileI {
   id: string;
-  data: string;
+  data: {
+    type: string;
+    data: ArrayBuffer;
+  };
   name: string;
   author: string;
   authorId: string;

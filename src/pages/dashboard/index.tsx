@@ -17,7 +17,6 @@ const Dashboard = () => {
   const [files, setFiles] = useState<FileI[] | null>(null);
   const { loading, setLoading } = useContext(LoadingContext);
   const { setToast } = useContext(ToastContext);
-  const router = useRouter();
 
   useEffect(() => {
     setFiles(user?.files || null);
@@ -56,8 +55,7 @@ const Dashboard = () => {
         },
       });
       const data = response.data;
-      setUser(data.user);
-
+      setFiles(data.updatedUser.files);
       setToast({
         open: true,
         message: 'File uploaded successfully',
@@ -65,7 +63,7 @@ const Dashboard = () => {
       });
       setLoading(false);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setToast({
         open: true,
         message: 'Something went wrong',
@@ -73,6 +71,11 @@ const Dashboard = () => {
       });
       setLoading(false);
     }
+  };
+
+  const handleLogOut = () => {
+    localStorage.removeItem('token');
+    setUser(null);
   };
 
   if (!files) {
@@ -176,7 +179,12 @@ const Dashboard = () => {
             }}
             className="basic-padding"
           >
-            <Button variant="contained" color="secondary" sx={{ width: '16vw', padding: '8px', fontSize: '0.8rem' }}>
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{ width: '16vw', padding: '8px', fontSize: '0.8rem' }}
+              onClick={handleLogOut}
+            >
               Logout
             </Button>
           </Box>
@@ -239,6 +247,7 @@ const Dashboard = () => {
             </Paper>
           </Box>
           {/* Upload Card */}
+          {/* FIXME: LIMIT its width */}
           <input type="file" name="file" id="file" onChange={handleFileUpload} hidden accept="application/pdf" />
           <label htmlFor="file">
             <Box
