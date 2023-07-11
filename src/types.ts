@@ -7,9 +7,16 @@ export interface SnackbarI {
 
 export interface FileI {
   id: string;
-  data: string;
+  data: {
+    type: string;
+    data: ArrayBuffer;
+  };
   name: string;
-  author: string;
+  author: {
+    id: string;
+    name: string;
+    email: string;
+  };
   authorId: string;
   comments: CommentI[];
   createdAt: Date;
@@ -26,7 +33,7 @@ export interface CommentI {
 
 export interface RegisterModalI {
   open: boolean;
-  handleClose: (open) => {};
+  handleClose: () => void;
 }
 
 export interface AuthContextI {
@@ -38,4 +45,10 @@ export interface AuthContextI {
     storage: number;
   };
   setUser: (user: string) => void;
+}
+
+export interface RegisterUserI {
+  name: string;
+  email: string;
+  password: string;
 }

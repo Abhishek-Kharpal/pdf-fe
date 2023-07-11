@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { useRouter } from 'next/router';
-import { Box, Button, Typography, TextField } from '@mui/material';
+import { Box, Button, Typography, TextField, useMediaQuery } from '@mui/material';
 import axios from 'axios';
 import { ToastContext } from '../../contexts/toast';
 import { AuthContext } from '../../contexts/auth';
@@ -16,7 +16,10 @@ const LoginForm = () => {
   const { setToast } = useContext(ToastContext);
   const { loading, setLoading } = useContext(LoadingContext);
   const { setUser } = useContext(AuthContext);
+
   const router = useRouter();
+
+  const mobile = useMediaQuery('(max-width: 425px)');
 
   const [loginForm, setLoginForm] = useState<LoginFormI>({
     email: '',
@@ -29,7 +32,7 @@ const LoginForm = () => {
   });
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const email = e.target.value;
+    const email = e.target.value.toLowerCase();
     if (!email.match(/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/)) {
       setLoginForm({ ...loginForm, email });
       setLoginFormErrors({ ...loginFormErrors, email: 'Email must contain domain' });
@@ -64,7 +67,7 @@ const LoginForm = () => {
       const res = await axios.post(`${API_URL}/login`, loginForm);
       const token = res.data.token;
       localStorage.setItem('token', token);
-      const tokenValidation = await axios.get(`${API_URL}/me`, {
+      const tokenValidation = await axios.get(`${API_URL}/user/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -73,6 +76,7 @@ const LoginForm = () => {
         open: true,
         message: res.data.message,
         severity: 'success',
+        duration: 3000,
       });
       setUser(tokenValidation.data.user);
       setLoading(false);
@@ -82,6 +86,7 @@ const LoginForm = () => {
         open: true,
         message: err.message,
         severity: 'error',
+        duration: 3000,
       });
     } finally {
       setLoading(false);
@@ -115,7 +120,7 @@ const LoginForm = () => {
             variant="filled"
             margin="normal"
             autoFocus
-            sx={{ width: '16vw', fontSize: '0.8rem', bgcolor: 'primary.contrastText' }}
+            sx={{ width: mobile ? '144px' : '16vw', fontSize: '0.8rem', bgcolor: 'primary.contrastText' }}
             fullWidth
             size="small"
             inputProps={{
@@ -137,7 +142,7 @@ const LoginForm = () => {
             margin="normal"
             type="password"
             fullWidth
-            sx={{ width: '16vw', fontSize: '0.8rem', bgcolor: 'primary.contrastText' }}
+            sx={{ width: mobile ? '144px' : '16vw', fontSize: '0.8rem', bgcolor: 'primary.contrastText' }}
             size="small"
           />
           {loginFormErrors.password && (
@@ -150,7 +155,7 @@ const LoginForm = () => {
               variant="contained"
               color="secondary"
               className="basic-margin"
-              sx={{ width: '16vw', padding: '8px', fontSize: '0.8rem' }}
+              sx={{ width: mobile ? '144px' : '16vw', padding: '8px', fontSize: '0.8rem' }}
               type="submit"
             >
               Login

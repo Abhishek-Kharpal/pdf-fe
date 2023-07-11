@@ -15,8 +15,12 @@ import { FileI } from '../../types';
 const Dashboard = () => {
   const { user, setUser } = useContext(AuthContext);
   const [files, setFiles] = useState<FileI[] | null>(null);
+  const [filteredFiles, setFilteredFiles] = useState<FileI[] | null>(null);
+  const [search, setSearch] = useState('');
+
   const { loading, setLoading } = useContext(LoadingContext);
   const { setToast } = useContext(ToastContext);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -24,9 +28,21 @@ const Dashboard = () => {
   }, [user]);
 
   if (loading) {
-    // Change it to skeleton
+    // TODO: Change it to skeleton
     return <></>;
   }
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setSearch(e.target.value);
+    if (e.target.value.trim().length === 0) {
+      setFilteredFiles(null);
+      return;
+    }
+
+    const filteredFiles = files.filter((file) => file.name.toLowerCase().includes(e.target.value.toLowerCase()));
+    setFilteredFiles(filteredFiles);
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -36,6 +52,7 @@ const Dashboard = () => {
         open: true,
         message: 'Please select a file',
         severity: 'error',
+        duration: 3000,
       });
       return;
     }
@@ -49,30 +66,37 @@ const Dashboard = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
 
-      const response = await axios.post(`${API_URL}/upload`, formData, {
+      const response = await axios.post(`${API_URL}/file/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
         },
       });
       const data = response.data;
-      setUser(data.user);
-
+      setFiles(data.updatedUser.files);
       setToast({
         open: true,
         message: 'File uploaded successfully',
         severity: 'success',
+        duration: 3000,
       });
       setLoading(false);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setToast({
         open: true,
         message: 'Something went wrong',
         severity: 'error',
+        duration: 3000,
       });
       setLoading(false);
     }
+  };
+
+  const handleLogOut = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    router.push('/');
   };
 
   if (!files) {
@@ -148,7 +172,7 @@ const Dashboard = () => {
             <Box sx={{ width: '80%', marginTop: '8px' }}>
               <LinearProgress
                 variant="determinate"
-                value={(user?.storage / 500) * 100}
+                value={(user?.storage / 1024 / 1024 / 500) * 100}
                 sx={{
                   '& .MuiLinearProgress-bar': {
                     bgcolor: 'secondary.main',
@@ -176,7 +200,12 @@ const Dashboard = () => {
             }}
             className="basic-padding"
           >
-            <Button variant="contained" color="secondary" sx={{ width: '16vw', padding: '8px', fontSize: '0.8rem' }}>
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{ width: '16vw', padding: '8px', fontSize: '0.8rem' }}
+              onClick={handleLogOut}
+            >
               Logout
             </Button>
           </Box>
@@ -187,9 +216,13 @@ const Dashboard = () => {
           sx={{
             width: '80vw',
             height: '100vh',
+            overflow: 'scroll',
             bgcolor: 'primary.main',
             display: 'flex',
             flexDirection: 'column',
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
           }}
         >
           {/* header*/}
@@ -230,6 +263,8 @@ const Dashboard = () => {
                   color: 'primary.contrastText',
                 }}
                 placeholder="Search"
+                value={search}
+                onChange={handleSearch}
               />
               <Tooltip title="Search">
                 <IconButton type="submit" sx={{ width: '20%' }} aria-label="search">
@@ -239,42 +274,50 @@ const Dashboard = () => {
             </Paper>
           </Box>
           {/* Upload Card */}
-          <input type="file" name="file" id="file" onChange={handleFileUpload} hidden accept="application/pdf" />
-          <label htmlFor="file">
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+            className="basic-padding"
+          >
+            <Typography variant="h6" color="primary.contrastText">
+              Upload PDF
+            </Typography>
             <Box
               sx={{
+                width: '128px',
+                height: '128px',
+                border: '1px dashed #F5F5F5',
+                marginTop: '8px',
+                cursor: 'pointer',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between',
+                alignItems: 'center',
+                '&:hover': {
+                  border: '1px solid #b785f5',
+                },
               }}
               className="basic-padding"
             >
-              <Typography variant="h6" color="primary.contrastText">
-                Upload PDF
-              </Typography>
-              <Box
-                sx={{
-                  width: '128px',
-                  height: '128px',
-                  border: '1px dashed #F5F5F5',
-                  marginTop: '8px',
+              <input type="file" name="file" id="file" onChange={handleFileUpload} accept="application/pdf" hidden />
+              <label
+                htmlFor="file"
+                style={{
                   cursor: 'pointer',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  '&:hover': {
-                    border: '1px solid #b785f5',
-                  },
                 }}
-                className="basic-padding"
               >
                 <Image src="/upload.svg" alt="Upload" width={50} height={50} />
                 <Typography variant="caption" color="primary.contrastText">
                   Upload your pdf here
                 </Typography>
-              </Box>
+              </label>
             </Box>
-          </label>
+          </Box>
 
           {/* Your Files */}
           <Box
@@ -298,9 +341,9 @@ const Dashboard = () => {
                 flexWrap: 'wrap',
               }}
             >
-              {files.map((file) => (
-                <Card file={file} key={file.id} />
-              ))}
+              {filteredFiles
+                ? filteredFiles.map((file) => <Card file={file} key={file.id} />)
+                : files.map((file) => <Card file={file} key={file.id} />)}
             </Box>
           </Box>
         </Box>
