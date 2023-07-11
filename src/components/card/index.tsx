@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { useState, useContext } from 'react';
-import { Box, Typography, IconButton, Dialog, Paper, InputBase, Button, Tooltip } from '@mui/material';
+import { Box, Typography, IconButton, Dialog, Paper, InputBase, Button, Tooltip, useMediaQuery } from '@mui/material';
 import axios from 'axios';
 import { AuthContext } from '../../contexts/auth';
 import { ToastContext } from '../../contexts/toast';
@@ -19,6 +19,8 @@ const Card = ({ file }: { file: FileI }) => {
 
   const [openShareDialog, setOpenShareDialog] = useState(false);
   const [shareEmail, setShareEmail] = useState('');
+
+  const mobile = useMediaQuery('(max-width: 425px)');
 
   const handleShare = (e) => {
     e.stopPropagation();
@@ -147,8 +149,7 @@ const Card = ({ file }: { file: FileI }) => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                // FIXME: Responsiveness
-                width: '320px',
+                width: mobile ? '240px' : '320px',
               }}
               className="basic-padding"
             >

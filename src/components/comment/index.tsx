@@ -25,12 +25,21 @@ const Comment = ({ description, authorName }: Props) => {
         color="primary.contrastText"
         sx={{
           marginBottom: '8px',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
         }}
       >
         {description}
       </Typography>
 
-      <Typography variant="body2" color="primary.contrastText">
+      <Typography
+        variant="body2"
+        color="primary.contrastText"
+        sx={{
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        }}
+      >
         {authorName}
       </Typography>
     </Box>

@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useState, useContext } from 'react';
 import { useRouter } from 'next/router';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography, useMediaQuery } from '@mui/material';
 import LoginForm from '../components/loginForm';
 import RegisterModal from '../components/registerModal';
 import { AuthContext } from '../contexts/auth';
@@ -11,6 +11,9 @@ import { AuthContext } from '../contexts/auth';
 export default function Home() {
   const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
   const { user } = useContext(AuthContext);
+
+  const tablet = useMediaQuery('(max-width: 768px)');
+  const mobile = useMediaQuery('(max-width: 425px)');
 
   const router = useRouter();
 
@@ -27,11 +30,12 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Box height="100vh" width="100vw" display="flex">
-        {/* Image Panel */}
-        <Box className="basic-padding" display="flex" justifyContent="center" alignItems="center" width="40%">
-          {/* TODO: Remove image for mobile view */}
-          <Image src="/auth.svg" alt="Authentication" width={500} height={500} />
-        </Box>
+        {!tablet && (
+          <Box className="basic-padding" display="flex" justifyContent="center" alignItems="center" width="40%">
+            {/* TODO: Remove image for mobile view */}
+            <Image src="/auth.svg" alt="Authentication" width={500} height={500} />
+          </Box>
+        )}
         {/* Form Panel */}
         <Box className="basic-padding" bgcolor={'primary.main'} flexGrow={1} display="flex" flexWrap="wrap">
           <Box flexBasis="100%">
@@ -54,7 +58,7 @@ export default function Home() {
               <Button
                 variant="contained"
                 color="secondary"
-                sx={{ width: '16vw', padding: '8px', fontSize: '0.8rem' }}
+                sx={{ width: mobile ? '144px' : '16vw', padding: '8px', fontSize: '0.8rem' }}
                 onClick={() => {
                   setRegisterDialogOpen(true);
                 }}

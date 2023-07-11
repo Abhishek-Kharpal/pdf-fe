@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { Dialog, Typography, Button, InputBase, Paper, IconButton, Box, Tooltip } from '@mui/material';
+import { Dialog, Typography, Button, InputBase, Paper, IconButton, Box, Tooltip, useMediaQuery } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { LoadingContext } from '../../contexts/loading';
 import { ToastContext } from '../../contexts/toast';
@@ -21,6 +21,8 @@ const RegisterModal = ({ open, handleClose }: RegisterModalI) => {
 
   const { setLoading } = useContext(LoadingContext);
   const { setToast } = useContext(ToastContext);
+
+  const mobile = useMediaQuery('(max-width: 425px)');
 
   const handleNameChange = (e) => {
     setRegisterUser({ ...registerUser, name: e.target.value });
@@ -98,7 +100,7 @@ const RegisterModal = ({ open, handleClose }: RegisterModalI) => {
     <Dialog open={open} onClose={handleClose}>
       <Paper
         sx={{
-          width: '320px',
+          width: mobile ? '240px' : '320px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',

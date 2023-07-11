@@ -216,9 +216,13 @@ const Dashboard = () => {
           sx={{
             width: '80vw',
             height: '100vh',
+            overflow: 'scroll',
             bgcolor: 'primary.main',
             display: 'flex',
             flexDirection: 'column',
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
           }}
         >
           {/* header*/}

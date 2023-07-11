@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import React, { useState, useEffect, useContext } from 'react';
-import { Box, Typography, InputBase, Paper, IconButton, Tooltip } from '@mui/material';
+import { Box, Typography, InputBase, Paper, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 import axios from 'axios';
 import SendIcon from '@mui/icons-material/Send';
 import { AuthContext } from '../../contexts/auth';
@@ -21,6 +21,8 @@ const File = () => {
   const { user } = useContext(AuthContext);
   const { loading, setLoading } = useContext(LoadingContext);
   const { setToast } = useContext(ToastContext);
+
+  const mobile = useMediaQuery('(max-width: 425px)');
 
   const handleMount = async () => {
     try {
@@ -66,6 +68,17 @@ const File = () => {
         setLoading(false);
         return;
       }
+      if (description.length > 1000) {
+        setToast({
+          open: true,
+          message: 'Comment must be less than 1000 characters',
+          severity: 'error',
+          duration: 3000,
+        });
+        setLoading(false);
+        return;
+      }
+
       const res = await axios.post(
         `${API_URL}/comment`,
         {
@@ -131,7 +144,7 @@ const File = () => {
         {/* Sidebar */}
         <Box
           sx={{
-            width: '20vw',
+            width: mobile ? '160px' : '280px',
             height: '100vh',
             bgcolor: 'primary.main',
             display: 'flex',
@@ -199,7 +212,6 @@ const File = () => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 height: '50%',
-                marginLeft: '8px',
                 bgcolor: 'primary.main',
                 border: '1px solid #F5F5F5',
                 borderRadius: '0px',
@@ -237,7 +249,7 @@ const File = () => {
         {/* PDF Viewer */}
         <Box
           sx={{
-            width: '80vw',
+            width: mobile ? 'calc(100vw - 160px)' : 'calc(100vw - 280px)',
             height: '100vh',
             bgcolor: 'primary.main',
             display: 'flex',
