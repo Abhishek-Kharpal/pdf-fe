@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
 
     if (token) {
       try {
-        const res = await axios.get(`${API_URL}/me`, {
+        const res = await axios.get(`${API_URL}/user/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -36,6 +36,7 @@ export const AuthProvider = ({ children }) => {
           open: true,
           message: err.response?.data?.message || 'Authentication failed',
           severity: 'error',
+          duration: 3000,
         });
         setUser(null);
         localStorage.removeItem('token');

@@ -15,6 +15,9 @@ import { FileI } from '../../types';
 const Dashboard = () => {
   const { user, setUser } = useContext(AuthContext);
   const [files, setFiles] = useState<FileI[] | null>(null);
+  const [filteredFiles, setFilteredFiles] = useState<FileI[] | null>(null);
+  const [search, setSearch] = useState('');
+
   const { loading, setLoading } = useContext(LoadingContext);
   const { setToast } = useContext(ToastContext);
 
@@ -25,7 +28,7 @@ const Dashboard = () => {
   }, [user]);
 
   if (loading) {
-    // Change it to skeleton
+    // TODO: Change it to skeleton
     return <></>;
   }
 
@@ -37,6 +40,7 @@ const Dashboard = () => {
         open: true,
         message: 'Please select a file',
         severity: 'error',
+        duration: 3000,
       });
       return;
     }
@@ -62,6 +66,7 @@ const Dashboard = () => {
         open: true,
         message: 'File uploaded successfully',
         severity: 'success',
+        duration: 3000,
       });
       setLoading(false);
     } catch (err) {
@@ -70,6 +75,7 @@ const Dashboard = () => {
         open: true,
         message: 'Something went wrong',
         severity: 'error',
+        duration: 3000,
       });
       setLoading(false);
     }

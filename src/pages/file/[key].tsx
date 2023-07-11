@@ -40,6 +40,7 @@ const File = () => {
         open: true,
         message: err.message,
         severity: 'error',
+        duration: 3000,
       });
     } finally {
       setLoading(false);
@@ -72,19 +73,22 @@ const File = () => {
         open: true,
         message: 'Comment added successfully',
         severity: 'success',
+        duration: 3000,
       });
     } catch (err) {
       setToast({
         open: true,
         message: err.message,
         severity: 'error',
+        duration: 3000,
       });
     } finally {
       setLoading(false);
     }
   };
 
-  if (!user) {
+  const noView = !user || !file || loading || !key;
+  if (noView) {
     return <></>;
   }
 
@@ -134,7 +138,9 @@ const File = () => {
               alignItems: 'center',
               height: '10vh',
               borderBottom: '1px solid #F5F5F5',
+              cursor: 'pointer',
             }}
+            onClick={() => router.push('/dashboard')}
           >
             <Typography variant="h4" color="primary.contrastText">
               ShareIT
@@ -207,7 +213,6 @@ const File = () => {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
-
                 <Tooltip title="Send">
                   <IconButton type="submit" color="secondary">
                     <SendIcon />

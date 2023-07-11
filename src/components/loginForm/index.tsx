@@ -64,7 +64,7 @@ const LoginForm = () => {
       const res = await axios.post(`${API_URL}/login`, loginForm);
       const token = res.data.token;
       localStorage.setItem('token', token);
-      const tokenValidation = await axios.get(`${API_URL}/me`, {
+      const tokenValidation = await axios.get(`${API_URL}/user/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -73,6 +73,7 @@ const LoginForm = () => {
         open: true,
         message: res.data.message,
         severity: 'success',
+        duration: 3000,
       });
       setUser(tokenValidation.data.user);
       setLoading(false);
@@ -82,6 +83,7 @@ const LoginForm = () => {
         open: true,
         message: err.message,
         severity: 'error',
+        duration: 3000,
       });
     } finally {
       setLoading(false);

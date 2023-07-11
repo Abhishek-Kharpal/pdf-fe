@@ -17,7 +17,7 @@ export interface FileI {
     name: string;
     email: string;
   };
-  authorId: string;
+  authorID: string;
   comments: CommentI[];
   createdAt: Date;
   size: number;
