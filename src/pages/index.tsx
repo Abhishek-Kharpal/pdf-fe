@@ -6,8 +6,6 @@ import { Box, Button, Typography } from '@mui/material';
 import LoginForm from '../components/loginForm';
 import RegisterModal from '../components/registerModal';
 import { AuthContext } from '../contexts/auth';
-import { LoadingContext } from '../contexts/loading';
-import { ToastContext } from '../contexts/toast';
 
 // TODO: Internalization of text
 export default function Home() {
@@ -64,8 +62,8 @@ export default function Home() {
                 Register
               </Button>
             </Box>
-
             <LoginForm />
+            <RegisterModal open={registerDialogOpen} handleClose={() => setRegisterDialogOpen(false)} />
           </Box>
         </Box>
       </Box>

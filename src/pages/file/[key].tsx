@@ -56,6 +56,16 @@ const File = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
+      if (description.trim().length === 0) {
+        setToast({
+          open: true,
+          message: 'Please enter a comment',
+          severity: 'error',
+          duration: 3000,
+        });
+        setLoading(false);
+        return;
+      }
       const res = await axios.post(
         `${API_URL}/comment`,
         {

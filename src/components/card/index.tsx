@@ -124,7 +124,7 @@ const Card = ({ file }: { file: FileI }) => {
           <Typography variant="caption" color="primary.contrastText">
             {Math.round((file.size / 1024 / 1024) * 100) / 100} MB
           </Typography>
-          {file.authorID === user.id && (
+          {file.authorId === user.id && (
             <Tooltip title="Share" placement="top">
               <IconButton size="small" color="secondary" sx={{ padding: '0px' }} onClick={handleShare}>
                 <ShareIcon />

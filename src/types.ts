@@ -17,7 +17,7 @@ export interface FileI {
     name: string;
     email: string;
   };
-  authorID: string;
+  authorId: string;
   comments: CommentI[];
   createdAt: Date;
   size: number;
@@ -33,7 +33,7 @@ export interface CommentI {
 
 export interface RegisterModalI {
   open: boolean;
-  handleClose: (open) => {};
+  handleClose: () => void;
 }
 
 export interface AuthContextI {
@@ -45,4 +45,10 @@ export interface AuthContextI {
     storage: number;
   };
   setUser: (user: string) => void;
+}
+
+export interface RegisterUserI {
+  name: string;
+  email: string;
+  password: string;
 }

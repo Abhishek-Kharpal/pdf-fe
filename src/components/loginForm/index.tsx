@@ -29,7 +29,7 @@ const LoginForm = () => {
   });
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const email = e.target.value;
+    const email = e.target.value.toLowerCase();
     if (!email.match(/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/)) {
       setLoginForm({ ...loginForm, email });
       setLoginFormErrors({ ...loginFormErrors, email: 'Email must contain domain' });
