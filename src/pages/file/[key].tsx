@@ -94,6 +94,7 @@ const File = () => {
       });
     } finally {
       setLoading(false);
+      setDescription('');
     }
   };
 

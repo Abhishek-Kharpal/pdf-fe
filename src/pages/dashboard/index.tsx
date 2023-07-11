@@ -32,6 +32,18 @@ const Dashboard = () => {
     return <></>;
   }
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setSearch(e.target.value);
+    if (e.target.value.trim().length === 0) {
+      setFilteredFiles(null);
+      return;
+    }
+
+    const filteredFiles = files.filter((file) => file.name.toLowerCase().includes(e.target.value.toLowerCase()));
+    setFilteredFiles(filteredFiles);
+  };
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const file = e.target.files?.[0]!;
@@ -247,6 +259,8 @@ const Dashboard = () => {
                   color: 'primary.contrastText',
                 }}
                 placeholder="Search"
+                value={search}
+                onChange={handleSearch}
               />
               <Tooltip title="Search">
                 <IconButton type="submit" sx={{ width: '20%' }} aria-label="search">
@@ -323,9 +337,9 @@ const Dashboard = () => {
                 flexWrap: 'wrap',
               }}
             >
-              {files.map((file) => (
-                <Card file={file} key={file.id} />
-              ))}
+              {filteredFiles
+                ? filteredFiles.map((file) => <Card file={file} key={file.id} />)
+                : files.map((file) => <Card file={file} key={file.id} />)}
             </Box>
           </Box>
         </Box>
