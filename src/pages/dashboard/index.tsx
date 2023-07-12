@@ -74,6 +74,7 @@ const Dashboard = () => {
       });
       const data = response.data;
       setFiles(data.updatedUser.files);
+      setUser(data.updatedUser);
       setToast({
         open: true,
         message: 'File uploaded successfully',
